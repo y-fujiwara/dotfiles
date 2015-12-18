@@ -5,8 +5,8 @@ if has('vim_starting')
 endif
 
 call neobundle#begin(expand('~/.vim/bundle/'))
-
 NeoBundleFetch 'Shougo/neobundle.vim'
+
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/neomru.vim'
 NeoBundle 'Shougo/vimfiler'
@@ -38,7 +38,6 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=140
 let g:indent_guides_enable_on_vim_startup=1
 let g:indent_guides_guide_size=1
 
-" Uniteİ’è
 let g:unite_enable_start_insert=1
 noremap <C-P> :Unite buffer<CR>
 noremap <C-N> :Unite -buffer-name=file file<CR>
@@ -51,16 +50,11 @@ au FileType unite inoremap <silent> <buffer> <expr> <C-K> unite#do_action('vspli
 au FileType unite nnoremap <silent> <buffer> <ESC><ESC> :q<CR>
 au FileType unite inoremap <silent> <buffer> <ESC><ESC> <ESC>:q<CR>
 
-" Gitİ’è
 autocmd QuickFixCmdPost *grep* cwindow
 set statusline+=%{fugitive#statusline()}
 
-" ƒ^ƒu‹Šo‰»İ’è
 let g:indent_guides_enable_on_vim_startup = 1
 
-""""""""""""""""""""""""""""""
-" ‘SŠpƒXƒy[ƒX‚Ì•\¦
-""""""""""""""""""""""""""""""
 function! ZenkakuSpace()
     highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
 endfunction
@@ -69,19 +63,15 @@ if has('syntax')
     augroup ZenkakuSpace
         autocmd!
         autocmd ColorScheme * call ZenkakuSpace()
-        autocmd VimEnter,WinEnter,BufRead * let w:m1=matchadd('ZenkakuSpace', '@')
+        autocmd VimEnter,WinEnter,BufRead * let w:m1=matchadd('ZenkakuSpace', 'ï¿½@')
     augroup END
     call ZenkakuSpace()
 endif
 
+nnoremap <silent> <Leader>fi :<C-u>VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
 
-" Undo—š—ğ‚ğƒtƒ@ƒCƒ‹‚É•Û‘¶‚·‚é
 set undodir=$HOME/.vim/undo
 set undofile
-
-""""""""""""""""""""""""""""""
-" ‘}“üƒ‚[ƒhAƒXƒe[ƒ^ƒXƒ‰ƒCƒ“‚ÌF‚ğ•ÏX
-""""""""""""""""""""""""""""""
 let g:hi_insert = 'highlight StatusLine guifg=darkblue guibg=darkyellow gui=none ctermfg=blue ctermbg=yellow cterm=none'
 
 if has('syntax')
@@ -112,10 +102,6 @@ function! s:GetHighlight(hi)
     return hl
 endfunction
 
-
-""""""""""""""""""""""""""""""
-" ©“®“I‚É•Â‚¶Š‡ŒÊ‚ğ“ü—Í
-""""""""""""""""""""""""""""""
 inoremap { {}<Left>
 inoremap {<Enter> {}<Left><CR><ESC><S-o>
 inoremap ( ()<ESC>i
@@ -132,9 +118,35 @@ if has("autocmd")
     \ endif
 endif
 
-autocmd VimEnter * execute 'NERDTree'
+autocmd VimEnter * execute 'VimFiler -buffer-name=explorer -split -simple -winwidth=30 -toggle -no-quit'
 
-nnoremap <silent><C-e> :NERDTreeToggle<CR>
+"autocmd TabEnter * execute 'VimFiler -buffer-name=explorer -split -simple -winwidth=30 -toggle -no-quit'
+
+nnoremap <silent><C-e> :VimFiler -buffer-name=explorer -split -simple -winwidth=30 -toggle -no-quit<CR>
+
+" vimfiler -------------------------------
+command Vf VimFiler -buffer-name=explorer -split -simple -winwidth=30 -toggle -no-quit
+" Like Textmate icons.
+let g:vimfiler_tree_leaf_icon = ' '
+let g:vimfiler_file_icon = '-'
+let g:vimfiler_marked_file_icon = '*'
+
+autocmd! FileType vimfiler call s:my_vimfiler_settings()
+function! s:my_vimfiler_settings()
+    nnoremap <silent><buffer> J
+        \ <C-u>:Unite -buffer-name=files
+        \ -default-action=lcd directory_mru<CR>
+    
+    nnoremap <silent><buffer><expr> e vimfiler#do_action('tabopen')
+endfunction
+
+let s:my_action = { 'is_selectable' : 1 }
+function! s:my_action.func(candidates)
+    wincmd p
+    exec 'tabopen '. a:candidates[0].action__path
+endfunction
+call unite#custom_action('file', 'my_tabopen', s:my_action)
+
 
 let NERDTreeIgnore = ['\~$','\.pyc$','\*NTUSER*','\*ntuser*','\NTUSER.DAT','\ntuser.ini']
 
@@ -180,14 +192,12 @@ set showmatch
 set softtabstop=4
 set shiftwidth=4
 set smartindent
-set listchars=tab:>-,trail:.  " ƒ^ƒu‚ğ >--- ”¼ƒXƒy‚ğ . ‚Å•\¦‚·‚é
+set listchars=tab:>-,trail:.
 
-"‘SŠpƒXƒy[ƒX‚ğƒnƒCƒ‰ƒCƒg•\¦
 function! ZenkakuSpace()
     highlight ZenkakuSpace cterm=reverse ctermfg=DarkMagenta gui=reverse guifg=DarkMagenta
 endfunction
-   
-" esc‚ª‰“‚¢‚Ì‚Å‘ã—p‚·‚éB
+
 noremap <C-j> <esc>
 noremap! <C-j> <esc>
 
@@ -198,14 +208,6 @@ noremap <CR> o<esc>
 " ------------------------------------
 syntax on
 colorscheme wombat
-
-" wombat Setting
-"set guioptions-=T
-"set lines=90 columns=200 " ‘S‰æ–Ê•\¦‹N“®‚µ‚½‚¢•û‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ğ–ß‚· 
-"gui
-"set transparency=221
-"set background=dark
-"colorscheme solarized
 
 nnoremap s <Nop>
 nnoremap sj <C-w>j
