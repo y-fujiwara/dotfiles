@@ -20,6 +20,24 @@ NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'kana/vim-submode'
 NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'junegunn/vim-easy-align'
+NeoBundle 'elixir-lang/vim-elixir'
+NeoBundle "osyo-manga/shabadou.vim"
+NeoBundle "osyo-manga/vim-watchdogs"
+NeoBundle "thinca/vim-quickrun"
+NeoBundle "thinca/vim-ref"
+NeoBundle "Shougo/neocomplete.vim"
+" vimproc build 適宜パス読み替え→  "c:\mingw64\bin\mingw32-make.exe" -f make_mingw64.mak CC=x86_64-w64-mingw32-gcc.exe
+NeoBundle 'liquidz/vivi.vim', {
+    \ 'depends': [
+    \   'elixir-lang/vim-elixir',
+    \   'Shougo/vimproc.vim',
+    \   'Shougo/neocomplete.vim',
+    \   'thinca/vim-quickrun',
+    \   'thinca/vim-ref',
+    \   'osyo-manga/shabadou.vim',
+    \   'osyo-manga/vim-watchdogs'
+    \ ]}
+
 call neobundle#end()
 
 filetype plugin indent on
@@ -137,7 +155,7 @@ function! s:my_vimfiler_settings()
         \ <C-u>:Unite -buffer-name=files
         \ -default-action=lcd directory_mru<CR>
     
-    nnoremap <silent><buffer><expr> e vimfiler#do_action('tabopen')
+    nnoremap <silent><buffer><expr> t vimfiler#do_action('tabopen')
 endfunction
 
 let s:my_action = { 'is_selectable' : 1 }
@@ -244,3 +262,10 @@ call submode#map('bufmove', 'n', '', '>', '<C-w>>')
 call submode#map('bufmove', 'n', '', '<', '<C-w><')
 call submode#map('bufmove', 'n', '', '+', '<C-w>+')
 call submode#map('bufmove', 'n', '', '-', '<C-w>-')
+
+if !exists("g:quickrun_config")
+    let g:quickrun_config = {}
+endif
+let g:quickrun_config["watchdogs_checker/_"] = {
+      \ "outputter/quickfix/open_cmd" : "",
+      \ }
